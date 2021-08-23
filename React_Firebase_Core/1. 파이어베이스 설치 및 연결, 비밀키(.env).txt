@@ -1,0 +1,53 @@
+Firebase 
+- 초창기 : 데이터베이스 
+- 지금 : 백엔드 기능을 포괄
+
+[Firebase 의 다양한 기능]
+Cloud Function -> Serverless Function 의 기능을 제공, AWS lamda와 비슷 
+Cloud Storage -> 기본적인 업로드 기능, 파일, 사진 업로드 가능 (트윗 할 때 사용할 것) 
+Hosting -> React Application을 배포하고자 할 때 사용
+⭐⭐⭐⭐⭐Authentication(인증) -> FireBase의 중요 포인트
+
+[Firebase 설치법] 
+: Firebase SDK 추가 -> Firebase 설정
+Web SDK API 참조 링크 (CDN 방식 , npm 방식(나는 이거 사용) ) 
+
+1. npm install --save firebase 
+2. firebase 초기화 방법 
+firebase.js 파일을 src 폴더 내에 생성한 다음 
+---
+[ firebase.js ]
+import firebase from "firebase/app"; // initailizeApp 을 사용하기 위해서 firebase import
+
+const firebaseConfig = {
+    // Firebase에서 자동으로 생성해 주는 Key 를 복붙하는 공간
+  };
+
+export default firebase.initializeApp(firebaseConfig); // index.js 에서 받기 위해서 export
+---
+
+3. [index.js] 파일에서 위에서 초기화 해놓은 firebase를 import 해온다. 
+import firebase from './firebase.js'; 
+console.log(firebase); // 를 했을 때, nwitter ~~~ 어쩌고 뜨면 연결 성공
+
+
+4. 참고 사항
+만약 auth 기능을 사용하고 싶다면 src/firebase.js 파일에서 
+import "firebase/auth"; 등을 import 해온다. 
+
+[ 비밀키 ]
+firebaseConfig에 담겨있는 Key 들을 github에 올리기 싫어서 해놓는 작업
+github에 올려놓으면 비밀 Key를 알게 되면 보안문제가 생길 수 있기 때문에 [환경변수]를 통해서 비밀키를 숨긴다. 
+
+1. [.env] 파일을 생성 : twitter 폴더의 최상위에 위치해야 함. 
+2. .gitignore 파일에 .env를 추가한다.
+3. [.env] 파일에는
+firebaseConfig 객체 내에 있는 Key 값들을 복사해서 붙여 넣은다음
+
+REACT_APP_API_KEY : 원래 있던 값
+과 같이 작성한다. 
+⚠ REACT_APP_(원래 있던거 모두 대문자로) : 원래 있던 값
+
+4. [firebase.js] 파일에서는   
+apiKey: process.env.REACT_APP_API_KEY 와 같이 변형한다. 
+(env에서 작성한 파일명을 process.env.~~~ 로 그대로 차용한다.) 
