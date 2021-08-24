@@ -7,9 +7,8 @@ const Auth = () => {
     const [newAccount, setNewAccount] = useState(true); 
     const [error, setError] = useState(); 
 
-    const toggleAccount = ()=>{
-        return setNewAccount(!newAccount);
-    };
+    // state 변경함수 : 콜백 인자로 현재 state의 상태에 대해서 가져 올 수 있다. 
+    const toggleAccount = ()=> setNewAccount((prev)=>{ return !prev});
 
     const onChange = (e) =>{
         if (e.target.name === 'email'){
@@ -49,15 +48,15 @@ const Auth = () => {
     return (
     <div>
         <form onSubmit={onSubmit} style={{marginBottom :'20px'}}>
-            <input name='email' type='email' placeholder='Email' onChange = {onChange}  required value={email}/>
-            <input name='password' type='password' placeholder='Password' onChange = {onChange}  required={password} />
+            <input name='email' type='email' placeholder='Email' onChange = {onChange}  required />
+            <input name='password' type='password' placeholder='Password' onChange = {onChange}  required />
             <input type='submit' value =
             { newAccount // true 일때는 회원가입, false 일때는 로그인 버튼을 내보낸다. 
               ? "Create Account"  
               : "Sign In" }></input>
          
         </form>
-        <h3 onClick = {toggleAccount}> {newAccount ? 'Sign In' : 'Create new Account'}</h3>
+        <h4 onClick = {toggleAccount}> {newAccount ? 'Sign In' : 'Create new Account'}로 전환</h4>
         <button>Continue with Google</button>
         <button>Continue with Github</button>
         {error}
