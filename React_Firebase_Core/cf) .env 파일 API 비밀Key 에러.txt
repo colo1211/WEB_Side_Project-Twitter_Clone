@@ -1,0 +1,22 @@
+[Firebase] 비밀 key 숨기기 (API Key)
+
+firebase를 연동하려면 firebaseConfig 값을 받아서 파일에 복붙하는데 이는 타인에게 노출되면 안된다. 
+해당 키를 알면 DB를 마음대로 조작할 수 있기 때문이다. 가장 중요한 것은 깃허브에 올릴 때, 이를 숨겨야 하는 것인데 
+이를 프로젝트의 최상위 위치에 .env 파일을 설치함으로써 해결 할 수 있다. 
+원래의 API KEY를 .env 파일에 옮겨 적고 .gitignore 파일에 .env 파일에 추가하여 .env 파일을 커밋하지 않는 방식이다. 
+
+Error : message: "your api key is invalid, please check you have copied it correctly."
+
+[해결 방법]
+1. 설치 
+npm install --save dotenv
+ 
+2. firebaseConfig 를 써야하는 파일 내에서
+import dotenv from 'dotenv';
+dotenv.config();
+ 
+다음과 같이 import 해오면 잘 동작하는 것을 확인 할 수 있다. 
+
+
+[참고 블로그]
+https://breathtaking-life.tistory.com/53
