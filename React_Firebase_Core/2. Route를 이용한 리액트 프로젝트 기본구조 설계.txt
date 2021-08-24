@@ -2,7 +2,11 @@
 
 [components]
 : 2개의 페이지
-1. App.js : Approute.js 를 가져온다. 
+1. App.js 
+⭐ Approute.js 를 가져온다.
+⭐ 모든 로직을 다루는 컴포넌트
+⭐ isLogin state를 props로 전달
+ 
 2. Approute.js 
 ⭐Approute.js 는 isLogin state를 통해,
    true 이면 Home 컴포넌트를 띄운다. 
