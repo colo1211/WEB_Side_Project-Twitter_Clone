@@ -1,10 +1,9 @@
-import React, { useState } from 'react'; 
+import React from 'react'; 
 import {HashRouter as Router, Route, Switch} from 'react-router-dom';
-import Auth from '../routes/Auth';
-import Home from '../routes/Home';
+import Auth from 'routes/Auth';
+import Home from 'routes/Home';
 
-const AppRouter = ()=>{
-    const [isLogin, setIsLogin] = useState(true); // 로그인이 되어 있는지 체크하는 state 
+const AppRouter = ({isLogin})=>{
     return (
         <Router>
             <Switch>
