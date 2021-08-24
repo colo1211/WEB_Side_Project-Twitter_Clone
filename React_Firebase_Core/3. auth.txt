@@ -1,6 +1,13 @@
 AUTHENTICATION
 (회원가입, 로그인, 소셜 로그인 기능 만들기)
 
+⭐ 유저를 가져와서 로그인 여부를 판단해야함
+-> isLogin state에 저장
+const [ isLogin, setIsLogin] = useState( authService.currentUser ); 
+
+currentUser
+: user 혹은 null을 반환한다. 
+
 ⚠[ React 내 절대경로 ]
 
 * 절대경로 사용법
@@ -19,11 +26,19 @@ AUTHENTICATION
 3. import 를 원하는 곳에서 자유롭게 import 가 가능하다. 
 > import AppRouter from 'components/Router.js';
   
-
 * 절대경로 단점
 : 절대경로는 모듈명과 동일하면 에러를 뿜는다. 따라서 firebase.js 라고 명명한 해당 파일을 fbase.js 로 이름을 변경하여
-다른 파일에서 import 해온다. 
+다른 파일에서 import 해온다.
 
+[ named export vs default export ]
+
+- named export : 하나의 모듈에서 여러 개의 값을 내보내고 싶을 때 사용한다.
+ex ) export const authService = firebase.auth(); 
+      export const dataService = firebase.database(); 
+⚠ 주의 export default const authService = firebase.auth(); 와 같이 default 와 name을 같이 사용할 수는 없다. 
+
+- default export : 하나의 모듈에서 하나의 값을 내보내고 싶을 때 사용한다. 
+ex ) export default () => {}
 
 [ auth 기능을 사용하고 싶을 때 ]
 1. [firebase.js] 파일 내에서 firebase의 auth 를 import 한다. 
@@ -37,4 +52,3 @@ AUTHENTICATION
 > console.log(authService); // false 
 가 나오면 제대로 된 것  
 
- 
