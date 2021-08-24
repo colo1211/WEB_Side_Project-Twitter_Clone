@@ -1,0 +1,31 @@
+auth 기능을 활용한 회원가입 및 로그인 기능 구현
+
+firebase.auth.EmailAuthProvider 에 있는 
+
+회원가입 : createUserWithEmailAndPassword
+로그인 : signInWithEmailAndPassword 
+를 통해서 구현 할 수 있다. 
+위의 메소드들은 모두 Promise 이므로 async, await 을 사용해야 한다. 
+
+[ persistence ]  
+사용자들을 어떻게 기억할 것인지 선택하는 방법론 
+local (기본 값) : 브라우저를 닫더라도 사용자 정보는 기억된다. 
+session : 탭이 열려있는 동안에는 사용자 정보를 기억하는 것을 의미한다. 
+none : 유저 정보를 기억하지 않음. 새로고침하면 바로 사라짐
+
+❔근데 왜 로그인이 처리가 되었음에도 Home 화면으로 넘어가지 않는 것일까?
+우리의 어플리케이션이 로드될 때, 
+firebase는 사용자가 로그인 되었는지 아닌지를 확인할 시간이 없음 (너무 빠르기 때문)
+그래서 어플리케이션이 시작되면 즉시 우리는 바로 항상 로그아웃 된다. 
+즉, currentUser 에는 변화가 없음
+(암튼 빠르다는 소리) 
+
+
+init state를 추가해서 초기화를 알수 있게 한다. 
+사용자의 로그인 상태 변경에 대한 관찰자를 추가한다. 
+=> onAuthStateChanged( )
+
+해결방안
+1. singInWithRedirect 
+2. signInWithPopup
+
