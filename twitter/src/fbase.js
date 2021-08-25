@@ -14,8 +14,9 @@ const firebaseConfig = {
 };
 
 
-  firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig); // 앱의 초기화 
   
+  export const firebaseInstance = firebase; 
   export const authService = firebase.auth();
    
 
