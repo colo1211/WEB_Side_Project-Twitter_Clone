@@ -1,0 +1,71 @@
+FireBase Create 기능 구현하기
+-> 여기서는 트윗 등록 기능 (Create) 을 의미한다. 
+
+결론 : 사용자가 제출한 값을 dbService.collection( ' 콜렉션 명 ' ).add( { DB에 올릴 값 (Key:'Value') } ); 
+
+[ 1. Form UI 및 함수 설계 ] => onChange , onClick 함수를 2개 생성해준다. 
+
+우선 로그인을 한 이후 Home 컴포넌트에서 Form 을 만들어준다. 
+
+````
+     <>
+        <form>
+            <input type='text' placeholder = 'How was your day?' onChange={onChange} value={nwitter} maxLength= {120}/>
+            <input type='submit' onClick={onSubmit} value='Kwitt!' />  
+        </form>
+     </> 
+````
+
+여기서 사용자가 input 태그 내에 값을 입력할 때 우리는 2가지를 충족해야 한다.
+1. 입력하는 것을 바로바로 state에 업데이트 시켜야 한다. 
+> let [nwitter, setNwitter]= useState(''); 를 선언하여 
+    const onChange = (e) => {
+        setNwitter(e.target.value);
+    }; 
+
+2. 입력하는 것을 창에 바로바로 보여줘야 한다.
+<input onChange={onChange} />
+
+[ 2. 사용자가 입력한 Twitt을 FireStore 에 바로 업데이트 (Create) ]
+
+해당 create 기능을 위한 함수를 사용하기 위해서는 
+[ fbase.js ] 
+1. import from 'firebase/firestore';
+2. export const dbService = firebase.firestore(); 
+
+[Home.js] 
+import { dbService } from 'fbase.js' ; 후에 
+사용자가 form 을 전송을 누르게 되면 state에 업뎃되었던 내용들을 빠르게 DB에 보내야 한다. 
+
+이를 
+⭐⭐⭐⭐⭐dbService.collection( ' 콜렉션 명 ' ).add( { DB에 올릴 값 (Key:'Value') } );  를 통해서 구현한다. 
+이는 Promise를 반환하여 async 함수 내에서 사용해야 하며 결과를 await 으로 받아온다. 
+혹은 .get() 
+
+````
+const onSubmit = async (e) => {
+        // 일단 제출을 막는다. 
+        e.preventDefault();
+    
+    // 사용자가 뭐라도 입력했다면, 제출
+    if(nwitter){ 
+        try {    
+            // 비관계형 데이터베이스, collection (폴더) - document (문서) 로 구성
+            let result = await dbService.collection('nwitter').add({
+                message : nwitter, 
+                date : Date.now()
+            });
+            console.log('성공');
+            setNwitter(''); // 서버로 제출 이후에 바로 칸을 빈 것으로 만든다. 
+        }
+        catch(error){
+        console.log(error.message); 
+      }
+    }
+    
+    // 사용자가 아무것도 제출을 안해서 빈칸 제출을 막는 코드
+    else{
+        alert('Write Your feel today');
+    }
+};
+````
