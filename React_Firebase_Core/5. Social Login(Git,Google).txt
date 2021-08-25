@@ -1,0 +1,31 @@
+Social Login
+
+-> 2가지 옵션이 존재
+1. signInWithRedirect
+2. signInWithPopup ( 더 간단 )
+
+
+[방법]
+1. provider(제공자)를 만들어야 한다. 
+2. provider 로 로그인한다. 
+
+[코드]
+버튼에 name 을 추가한다. 
+<button name='google' onClick = {onSocialClick}>Continue with Google</button>
+<button name='github' onClick = {onSocialClick}>Continue with Github</button>
+
+onSocialClick 함수를 만든다. 
+provider를 얻기 위해서는 firebase에 내장되어있는 firebase.auth.[]AuthProvider(); 를 사용해야 한다. 
+따라서 firebase를 import (fbase.js에서 name export )해온다.
+이후 얻어낸 provider를 signInWithPopup(provider)애 넣어준다. 
+    const onSocialClick = async(event) =>{
+        let provider; 
+        if (event.target.name === 'google'){
+            provider = new firebaseInstance.auth.GoogleAuthProvider(); 
+        }else if (event.target.name === 'github'){
+            provider = new firebaseInstance.auth.GithubAuthProvider(); 
+        }
+        console.log('provider',provider); 
+        await authService.signInWithPopup(provider);
+    }
+
