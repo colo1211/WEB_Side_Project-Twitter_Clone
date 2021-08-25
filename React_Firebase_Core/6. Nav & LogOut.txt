@@ -1,0 +1,55 @@
+1. NavBar 추가 
+NavBar는 회원가입/로그인 화면을 제외한 기본영역에서 모두 띄울 것이기 때문에 
+우선 Navigation를 컴포넌트 파일로 만들어서 관리한다. 
+
+[Navigation.js 컴포넌트] 
+````
+import React from 'react'; 
+import {Link} from 'react-router-dom'; 
+
+const Navigation = ( ) => {
+    return(
+    <div>
+        <ul>
+            <li><Link to='/'> Home </Link></li>
+            <li><Link to='/profile'> My Profile </Link></li>
+        </ul>
+    </div>
+    )
+}
+
+export default Navigation;
+````
+
+[Router.js 컴포넌트]
+1. isLogin 이 true 라면 <Navigation/> 을 띄운다. 
+만약 false 라면 null을 띄운다. > 하지만, Switch 밖으로 빼야한다.  
+
+⭐⭐⭐⭐⭐만약 Switch 내부에 <Navigation/> 을 추가하면 모든 페이지에서 Navbar만 보이고 다른 컴포넌트는 보이지 않는다. 
+왜냐하면, Switch 는 만족하는 상위 요소 하나만 띄워주고 밑에꺼를 안보기 때문임!!!!!
+
+2. Link to='/profile' 를 통해서 링크를 이동하려 했지만 해당 페이지가 렌더링 되지 않는다. Route에 Profile 이 추가되어 있지 않기 때문이다. Link 태그는 a 태그와 동일하다.  
+따라서 Router.js 에서 
+
+<Route exact path='/profile'> 
+    <Profile/> 
+</Route> 를 추가한다.  
+
+Link 를 추가하면 URL만 이동한다. 따라서 해당 URL에 맞는 Component 들을 띄워주게끔 라우터를 재설정 해주어야 한다. 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. 로그아웃 구현하기 
+
+firebase.auth( ) 에 내장되어 있는 signOut( ); 을 사용하면 쉽게 구현 가능
+signOut 을 사용하면 IndexDB에 저장되어 있는 Key 와 value 를 모두 삭제해줘서 로그아웃이 가능
+로그아웃 이후, 로그인 페이지로 이동하기 위해서는 
+useHistory Hook 을 사용하면 된다. 
+````
+    const onLogOutClock =()=>{
+        authService.signOut(); // 로그아웃을 하는 Firebase 함수 .signOut();
+        // setIsLogin(false); authService.signOut 함수 대신에 사용 가능하다.   
+        history.push('/'); 
+    }
+````
+
