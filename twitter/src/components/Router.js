@@ -1,11 +1,15 @@
 import React from 'react'; 
-import {HashRouter as Router, Route, Switch} from 'react-router-dom';
+import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
 import Auth from 'routes/Auth';
 import Home from 'routes/Home';
+import Profile from 'routes/Profile';
+import Navigation from 'components/Navigation.js';
 
 const AppRouter = ({isLogin})=>{
     return (
         <Router>
+            {/* 로그인이 되었을 때, Nav 바를 렌더링 해줌 */}
+            {isLogin ?<Navigation/> : null}
             <Switch>
                 {
                     isLogin === true 
@@ -15,12 +19,16 @@ const AppRouter = ({isLogin})=>{
                     <Route exact path='/'>  
                         <Home/>
                       </Route>
+                    <Route exact path='/profile'>  
+                        <Profile/>
+                    </Route>
                     </>
                     // 로그인이 되어 있지 않다면 Auth 로 이동
                     : <Route exact path='/'>
                         <Auth/>
                       </Route>
                 }
+                <Redirect from='*' to='/'/>
             </Switch>
         </Router>
     )
