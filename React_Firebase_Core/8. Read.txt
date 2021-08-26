@@ -1,0 +1,43 @@
+Read 
+FireStore 에 저장한 내용들을 읽어오기
+⭐핵심 : dbService.collection(' 콜렉션 명 ').get( ); -> promise를 리턴, 따라서 async - await 을 사용. 
+
+컴포넌트가 Mount 될 때 사용 하기 위해서는 useEffect 내부에서 dbService.collection(' 콜렉션 명 ').get( ); 을 사용해야 한다. 
+하지만, useEffect 내부에서는 async - await 을 사용 불가하므로 외부에서 미리 함수를 선언한 이후에 useEffect 내부에서 함수를 호출한다.  
+useEffect (()=>{
+    getNwitters();
+},[]);
+ 
+````
+    const getNwitters = async() => {
+        // DB에 올라온 내용들을 가져오기 위한 .get()
+        const dbNweets = await dbService.collection('nwitter').get();   
+     });
+    }
+````
+하지만 dbNweets에는 FireStore SnapShot(데이터 스냅샷) 이 찍히기 때문에 forEach로 콜백인자에 있는 .data( )를 가져와야 함.
+또한 update와 delete를 위해서 게시물의 id 를 가져와야 한다.     
+
+````
+    const getNwitters = async() => {
+        const dbNweets = await dbService.collection('nwitter').get();
+        dbNweets.forEach((document)=>{
+            const nweetObject = { 
+                ...document.data(), 
+                id:document.id 
+            }; //
+	setNwitters((prev)=> [nweetObject, ...prev]); // 이전 데이터들과 현재 작성된 데이터를 합치는 작업
+        });
+    }
+````
+
+이후에 return( // JSX 코드) 내부에서 
+<div>
+            {
+                nwitters.map((value,index)=>{
+                    return <h5 key={index}>{value.message}</h5>;
+                })
+            }
+        </div>
+를 통해서 읽어온 데이터를 화면에 띄운다.  
+
