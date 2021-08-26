@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'; 
 import {dbService} from 'fbase.js'; 
+import Nweets from 'components/Nweets.js';
 
 const Home = ({userObj}) => {
     const [nwitter, setNwitter]= useState(''); // 사용자의 입력값을 받는 state 
@@ -71,7 +72,8 @@ const Home = ({userObj}) => {
         <div>
             {
                 nwitters.map((value,index)=>{
-                    return <h5>{value.text}</h5>;
+                    return <Nweets nweetObj = {value} itsMe = {userObj.uid === value.creatorId}/> // itsMe 는 true 혹은 false 를 전달
+                    // return <h5>{value.text}</h5>;
                 })
             }
         </div>
