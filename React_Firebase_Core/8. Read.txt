@@ -1,6 +1,7 @@
 Read 
 FireStore 에 저장한 내용들을 읽어오기
 ⭐핵심 : dbService.collection(' 콜렉션 명 ').get( ); -> promise를 리턴, 따라서 async - await 을 사용. 
+But! 이 방법은 Real Time 으로 바로 뜨지는 않음, 새로고침을 해야 뜬다. 따라서, 다음 포스팅에서 realtime 에 대해서 알아본다. 
 
 컴포넌트가 Mount 될 때 사용 하기 위해서는 useEffect 내부에서 dbService.collection(' 콜렉션 명 ').get( ); 을 사용해야 한다. 
 하지만, useEffect 내부에서는 async - await 을 사용 불가하므로 외부에서 미리 함수를 선언한 이후에 useEffect 내부에서 함수를 호출한다.  
