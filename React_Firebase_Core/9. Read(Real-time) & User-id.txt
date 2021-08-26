@@ -1,0 +1,55 @@
+uid & Realtime Read
+
+[1. 누가 글썼는지 확인하는 uid]
+
+방법  
+1. App.js 에서 onAuthStateChanged를 활용하여 콜백함수 내부 인자로 user 를 받아서 사용자의 로그인 유무에 대해서 판단할 수 있었다. 
+App.js 에서 사용하고 있는 내부의 user 정보를 App.js에서 userObj state를 생성한 다음 이를 Route.js -> Home.js 까지 props 를 2중 전달한다. 
+(App.js -> Router.js -> Home.js) 
+
+2. props 로 Home.js 에서 전달받은 이후에 userObj 내부에 있는 uid 를 사용한다. 
+await dbService.collection('nwitter').add({
+    text : nwitter,
+    createdAt : Date.now(),
+    creatorId : userObj.uid
+});
+userObj.uid : 로그인한 사용자의 id를 알 수 있다. 
+
+[ 2. RealTime Read ] 
+get방식으로 읽어오는 것은 새로고침을 해야 쓴 글을 읽어올 수 있다. ( get으로 FireStore에 접근하여 Read 하는 방식을 바꿔서 새로고침 없이 화면에 렌더링이 가능해진다. )
+하지만 onSnapshot 방식을 사용하면 실시간으로 CRUD 를 진행 할 수 있다. 
+
+⭐⭐⭐⭐⭐onSnapshot 을 활용 (CRUD 모두 포함) 
+: FireBase 데이터베이스의 변화 혹은 아무 짓이나 실시간으로 감지 및 알려주는 이벤트리스너
+또한, get은 Promise를 리턴해서 async-await 을 사용했지만 onSnapshot 은 Promise를 리턴하지 않으므로
+useEffect (()=>{},[]); 에서 즉각적인 활용이 가능하다. 
+
+useEffect(()=>{
+        dbService.collection('nwitter').orderBy("createdAt","desc").onSnapshot((snapshot)=> {
+            const temp = snapshot.docs.map((doc)=>{
+                return ({
+                    ...doc.data(),
+                    id : doc.id
+                });
+            });
+            setNwitters(temp);
+        })
+    }, []);
+
+✔✔✔✔✔ 내부 콜백 인자 snapshot은 완전히 get방식에서 snap샷을 처음 준것과 동일하여 우리가 아는 형태가 아니다. 
+따라서, snapshot.docs 로 접근해야 우리가 아는 방식의 객체로 접근이 가능하다. 
+
+ex) snapshot.docs
+{
+text : 323231313,
+creatorId : 'dwwefdfdfdcdffewfef',
+createdAt : '21324131312313'
+}
+와 같은 형태의 배열 내의 객체 여러개
+
+snapshot.docs.map((doc)=>{
+   // doc은 배열 내의 객체 한 개씩 순회하며 return  	         
+})
+
+⭐ map 함수는 docs를 순회하며 만들 객체로 구성된 배열을 리턴하므로 
+마지막에 한번만 setNwitters(temp); 를 해주면 된다. 
