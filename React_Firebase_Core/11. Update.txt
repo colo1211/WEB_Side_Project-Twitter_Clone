@@ -1,0 +1,83 @@
+Update (수정) 
+⭐ Update & Delete 기능을 모두 Nweet.js 에서 구현됨
+핵심 : dbService.doc(`DB내 파일 경로`).update({ 수정할 정보를 객체로 전달 });
+
+Update 기능을 구현하기 위해서는 2가지 state를 추가해야한다. 
+1. editing : update form 을 띄워줄 state (true/false) => toggleEditing 함수를 만들어서 사용자가 버튼을 누를때 마다 true/false 로 변할 수 있도록 설계 
+2. newNweet : 사용자가 수정하는 input 에 입력한 새로운 내용 (기존의 내용을 담고있어야 하며 즉각적으로 state를 변동해야 함)
+
+[논리 흐름] 
+1. 사용자가 [Edit] 버튼을 클릭하면 toggleEditing 함수를 실행하여 editing 을 true 로 변경해준다. 또한,  editing 이 true 로 되면 수정 Form 을 띄우도록 삼항연산자를 통해서 JSX를 설계한다. 
+2. 수정 Form 이 뜨면 기존에 있던 [Edit/Delete] 버튼은 사라지고 Edit완료 / Close 버튼을 띄워준다. 
+3. 수정 Form 은 두가지 조건을 충족해야 한다. 
+	조건 
+	3-1. 기존에 있던 값을 저장한 newNweet state를 input 창에 띄우고 onChange 함수를 작성하여 사용자가 변경한 값을 state에 즉각적으로 반영하도록 한다. => onChange()  
+	3-2. 수정 Form을 submit(onClick) 할때 작동할 onSubmit 함수를 생성하고 이를 dbService.doc(`/nwitter/${nweetObj.id}`).update({text : newNweet}); 한다. 이후 editing 을 false 로 변경하여 수정 창을 닫는다. => onSubmit()
+
+⭐ dbService.doc(`DB내 파일 경로`).update({ 수정할 정보를 객체로 전달 });
+
+
+````
+const Nweets = ({nweetObj, itsMe}) => {
+
+    // Toggle 의 상태로 수정 Form 상태를 관리
+    const [editToggle, setEditToggle] = useState(false);
+    // newNweet 는 수정할 내용을 띄우고 수정된 내용을 저장하는 state 
+    const [newNweet, setEditNewNweet] = useState(nweetObj.text);  
+
+    // Delete
+    const onDeleteClick = async() => { 
+        const ok = window.confirm('삭제하시겠습니까?');
+        console.log(ok); 
+        if (ok === true) { // 삭제 
+            // console.log(nweetObj.id); // 해당 게시물의 id를 준다.            
+             const temp = await dbService.doc(`/nwitter/${nweetObj.id}`).delete(); // dbService.doc(파일 경로) -> 파일을 반환 
+        }
+    }
+
+    const onChange = (event) => {
+        setEditNewNweet(event.target.value);  
+        console.log(newNweet); 
+    }
+
+    // Update
+    const onSubmit = async(event) => {
+        // console.log('수정 제출'); 
+        event.preventDefault();
+        await dbService.doc(`/nwitter/${nweetObj.id}`).update({text : newNweet});
+        setEditToggle((prev)=>!prev); 
+    }
+
+    const changeToggle = () => {
+        setEditToggle((prev)=>!prev); 
+    } 
+
+    return (
+        <div>
+        {editToggle //Toggle 이 true 라면 수정 Form 을 띄워주고 기존의 텍스트를 없애줌
+        ?
+            (
+                <>
+                    <form>
+                        <input type='text' value={newNweet} onChange={onChange}/> 
+                        <input type='submit' onClick={onSubmit} value='Edit Complete!'/>
+                    </form>
+                    <button onClick={changeToggle}>Cancel</button>
+                </>
+            )
+        : // Toggle 이 false 라면 수정 Form이 아닌 기존의 텍스트를 보여줌
+                <><h5>{ nweetObj.text }</h5></>
+        }
+        { itsMe && ( // itsMe가 True이고 editToggle이 false(수정X)면 삭제버튼과 수정버튼을 보여줌
+            editToggle 
+            ? null 
+            :
+                <>
+                    <button onClick={onDeleteClick}>Delete</button>
+                    <button onClick={changeToggle}>Edit</button>
+                </>
+        )}
+        </div> 
+    )
+}
+````
