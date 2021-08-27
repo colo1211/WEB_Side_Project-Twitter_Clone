@@ -1,0 +1,46 @@
+Delete (삭제) 
+핵심 : dbService.doc(` DB내 파일 경로 `).delete();
+
+[ 1. Nweet 를 생성하는 map 내부의 JSX를 컴포넌트로 빼기 ]
+
+[Home.js] 
+````
+{
+        nwitters.map((value,index)=>
+        	return <Nweets nweetObj = {value} itsMe = {userObj.uid === value.creatorId}/> // itsMe 는 true 혹은 false 를 전달
+        })
+ }
+````
+props 로 두가지 정보를 넘겨준다. 
+1. nweetObj에는 file 의 text, createdAt, creatorId 3가지 정보가 객체로 넘겨진다. 
+2. itsMe 는 본인의 Id가 맞는지 확인하여 자료가 true 혹은 false 로 넘겨진다. 해당 props를 활용하여 
+> 본인의 게시물이 맞다면 (true) 게시물에 수정/삭제 버튼을 부여한다. 
+> 본인의 게시물이 아니라면 (false) 게시물에 수정/삭제 버튼을 부여하지 않는다. 
+
+[Nweets.js] 
+````
+    return (
+        <div>
+	<h5> { nweetObj.text } </h5>
+        	{ itsMe && ( 
+                <>
+                    <button onClick={onDeleteClick}>Delete</button>
+                    <button>Edit</button>
+                </>
+        )}
+        </div> 
+)
+````
+
+만약, 내가 작성한 글이 맞다면 해당 글에 대해서 Delete 버튼과 Edit 버튼을 부여해준다. 
+
+[ onDeleteCilck ]
+
+````
+const onDeleteClick = async( event ) => {
+      const ok = window.confirm (' 삭제할래요? ');
+      if ( ok === true ){
+	const temp = await dbService.doc(`/nwitter/${ nweetObj.id } `).delete();  	
+      } 
+}
+````
