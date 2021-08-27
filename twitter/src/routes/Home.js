@@ -5,6 +5,7 @@ import Nweets from 'components/Nweets.js';
 const Home = ({userObj}) => {
     const [nwitter, setNwitter]= useState(''); // 사용자의 입력값을 받는 state 
     const [nwitters, setNwitters] = useState([]); // 기존에 db에 있던 값들을 저장하기 위한 state 
+    const [attachment, setAttachment] = useState(); 
 
     // const getNwitters = async() => {
     //     // DB에 올라온 내용들을 가져오기 위한 .get()
@@ -62,11 +63,36 @@ const Home = ({userObj}) => {
         setNwitter(e.target.value);
     }; 
 
+    const onFileChange = (e) =>{
+        // console.log(e.target.files[0]); // C:\fakepath\김경원 증명사진.JPG 와 같이 뜸
+        const reader = new FileReader(); 
+        reader.readAsDataURL(e.target.files[0]);
+
+        // 파일 로딩이 끝나면 이미지 전용 attachment state에 이미지 URL을 설정
+        reader.onloadend = (finished) => {
+            setAttachment(finished.target.result); 
+        }
+
+    };
+
+    const clearSetAttachment = () => {
+        setAttachment('');
+    }
+
     return(
      <>
         <form>
             <input type='text' placeholder = 'How was your day?' onChange={onChange} value={nwitter} maxLength= {120}/>
+            <input type='file' accept='image/*' onChange={onFileChange}/>
             <input type='submit' onClick={onSubmit} value='Kwitt!' />  
+            { attachment && 
+                (
+                    <div>
+                        <img src={attachment} width='80px' height='100px'/>
+                        <button onClick={clearSetAttachment}>Clear</button>    
+                    </div>
+                )
+            } 
         </form>
 
         <div>
