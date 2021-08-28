@@ -64,16 +64,18 @@ const Home = ({userObj}) => {
     }; 
 
     const onFileChange = (e) =>{
-        // console.log(e.target.files[0]); // C:\fakepath\김경원 증명사진.JPG 와 같이 뜸
-        const reader = new FileReader(); 
-        reader.readAsDataURL(e.target.files[0]);
 
-        // 파일 로딩이 끝나면 이미지 전용 attachment state에 이미지 URL을 설정
-        reader.onloadend = (finished) => {
-            setAttachment(finished.target.result); 
+        // Browser API : FileReader(); 
+        const reader = new FileReader();
+        // 목표 : Img 의 URL을 가져와서 setAttachment에 넣어주는 것
+        // But, Text input 값은 e.target.value 로 가져올 수 있지만 , e.target.files 를 통한 img 파일은 Fake Path 를 반환해준다. 
+        // 따라서, FileReader API를 활용하여 URL을 가져온다. 
+        reader.readAsDataURL(e.target.files[0]);  // e.target.files는 파일을 여러개 선택을 대비하기 위한 API 사용 방법이므로 나는 하나만 할거니까 [0] 으로 선택 
+        reader.onloadend = (finished) => { // reader는 생명주기함수처럼 다룬다. 파일 로드가 끝나면 Attachment state에 img 의 주소를 담으라는 뜻
+            setAttachment(finished.target.result); // 이건 attachment에 URL을 담으라는 뜻, 만약 Img 미리보기를 취소하려면 attachment를 비워주면 된다. 
         }
-
     };
+
 
     const clearSetAttachment = () => {
         setAttachment('');
@@ -88,7 +90,9 @@ const Home = ({userObj}) => {
             { attachment && 
                 (
                     <div>
+                        {/* 파일을 선택하면 사진이 나오게 될 영역 */}
                         <img src={attachment} width='80px' height='100px'/>
+                        {/* 취소를 클릭했을 때 사진의 URL을 삭제해줄 함수 */}
                         <button onClick={clearSetAttachment}>Clear</button>    
                     </div>
                 )
