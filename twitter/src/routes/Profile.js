@@ -2,12 +2,13 @@ import { authService } from 'fbase';
 import React from 'react'; 
 import { useHistory } from 'react-router-dom';
 
-export default () => {
+export default ({isLogin ,setIsLogin}) => {
 
     let history = useHistory();
     const onLogOutClock =()=>{
         authService.signOut(); // 로그아웃을 하는 Firebase 함수 .signOut();
-        // history.push('/'); 
+        // setIsLogin(false); 
+        history.push('/'); 
     }
     return (
         <>

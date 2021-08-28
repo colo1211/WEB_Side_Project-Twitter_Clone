@@ -9,14 +9,18 @@ function App() {
   const [isLogin, setIsLogin] = useState(false); // 로그인이 되어 있는지 체크하는 state 
   // console.log(authService.currentUser);
 
+  const [userObj, setUsetObj] = useState(null); 
+  // 글쓴이의 user id에 대해서 전달하기 위한 state, props 로 전달할 것임. 
+
   useEffect(()=>{
     
     setInit (true); 
     
-    // 로그인 상태 변경 관찰자, onAuthStateChanged() 변경이 감지되면 
+    // 로그인/로그아웃 상태 변경 관찰자, onAuthStateChanged() 변경이 감지되면 
     authService.onAuthStateChanged((user)=> {
       if (user){ // 뭐라도 찍혀있다면, 
         setIsLogin(true); 
+        setUsetObj(user); 
       }else {
         setIsLogin(false); 
       }
@@ -26,8 +30,8 @@ function App() {
 
   return (
     <>
-      { init ?<AppRouter isLogin={isLogin}/> : 'Loading...'}
-      <footer>&copy; {new Date().getFullYear()} Twitter </footer>
+      { init ?<AppRouter isLogin={isLogin} setIsLogin={setIsLogin} userObj={userObj}/> : 'Loading...'}
+      <footer>&copy; {new Date().getFullYear()} Kwitter </footer>
     </>
   );
 }

@@ -70,7 +70,7 @@ const Auth = () => {
               : "Sign In" }></input>
          
         </form>
-        <h4 onClick = {toggleAccount}> {newAccount ? 'Sign In' : 'Create new Account'}로 전환</h4>
+        <h4 onClick = {toggleAccount}> {newAccount ? 'Sign In' : 'Create new Account'} (으)로 전환</h4>
         <button name='google' onClick = {onSocialClick}>Continue with Google</button>
         <button name='github' onClick = {onSocialClick}>Continue with Github</button>
         {error}
