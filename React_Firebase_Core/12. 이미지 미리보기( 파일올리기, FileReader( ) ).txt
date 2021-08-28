@@ -1,0 +1,37 @@
+사진 미리보기 기능
+
+우선 트윗을 하는 곳에 파일을 첨부하기 위해서는 JSX 영역을 수정해야 한다. 
+1. <input type='file' accept='image/*' onChange={onFileChange}/>
+            { attachment && 
+                (
+                    <div>
+                        {/* 파일을 선택하면 사진이 나오게 될 영역 */}
+                        <img src={attachment} width='80px' height='100px'/>
+                        {/* 취소를 클릭했을 때 사진의 URL을 삭제해줄 함수 */}
+                        <button onClick={clearSetAttachment}>Clear</button>    
+                    </div>
+                )
+            } 
+> 파일형태의 input 을 받을 것이고, 해당 파일의 종류를 img 파일로 한정한다는 뜻이다. 
+만약 사용자가 어떤 파일을 선택하게 된다면 onChange 를 통해서 onFileChange 함수를 실행한다는 뜻이다. 
+
+2. [ onFileChange 함수 ]
+Browser API를 활용하여 Img 의 URL을 가져와서 attachment state에 URL을 넣어주는 것이 목적이다. 
+
+    const onFileChange = (e) =>{
+        // Browser API : FileReader(); 
+        const reader = new FileReader();
+
+        // 목표 : Img 의 URL을 가져와서 setAttachment에 넣어주는 것
+        // But, Text input 값은 e.target.value 로 가져올 수 있지만 , e.target.files 를 통한 img 파일은 Fake Path 를 반환해준다. 
+        // 따라서, FileReader API를 활용하여 URL을 가져온다. 
+        
+        reader.readAsDataURL(e.target.files[0]);  // e.target.files는 파일을 여러개 선택을 대비하기 위한 API 사용 방법이므로 나는 하나만 할거니까 [0] 으로 선택 
+        reader.onloadend = (finished) => { // reader는 생명주기함수처럼 다룬다. 파일 로드가 끝나면 Attachment state에 img 의 주소를 담으라는 뜻
+        setAttachment(finished.target.result); // 이건 attachment에 URL을 담으라는 뜻, 만약 Img 미리보기를 취소하려면 attachment를 비워주면 된다. 
+        }
+    };
+
+3. [ clearSetAttachment 함수 ]
+이미지 미리보기를 해제해주는 함수 
+=> attachment state의 값을 비워서 클릭했을 때 이미지를 안보이게 해주는 함수
