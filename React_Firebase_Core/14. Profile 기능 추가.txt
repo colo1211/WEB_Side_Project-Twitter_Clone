@@ -1,0 +1,42 @@
+프로필 페이지 제작 및 필터링 기능 제작
+
+[ 프로필 페이지 제작 ] 
+-> 현재 프로필 화면 : Log Out 버튼 1개
+
+목표
+1. 내가 쓴 글만 보는 기능
+2. 프로필 편집 기능
+
+[ 1. 내가 쓴 글만 보는 기능 ]
+사용자가 My Profile 을 클릭했을 때, 현재 Profile 컴포넌트가 뜨게 되어 있다. 
+해당 컴포넌트가 렌더링 되자마자 파이어스토어에서 데이터를 가져와야 한다. 
+
+````
+    useEffect(()=>{
+        getMynweet(); 
+    },[]);
+````
+
+async 함수를 통해서 fireStore 에 get 요청을 보내야 한다. 
+하지만, useEffect 내부에서는 async 함수 호출만 가능하다. 
+
+````
+const getMynweet = async() =>{
+         myNweet = await dbService.collection('nwitter')
+        .where("creatorId","==",userObj.uid)
+        .orderBy('createdAt','asc')
+        .get();
+        myNweet.docs.map((doc)=>{console.log(doc.data())}); // 데이터를 가져오는 방법
+    }
+
+````
+> props 로 전달받은 userObj.uid 는 사용자의 userid 이다. 해당 id와 fireStore 에 올라와있는 
+creatorId 가 같은 데이터들만 get요청으로 데이터를 받아온다. 
+
+⚠Order By를 사용하게 되면 색인(Index) 가 무조건 있어야 한다. 
+아마 위처럼 입력하면 orderBy 때문에 에러가 날 것이다. 
+하지만 에러창에 링크가 뜨는데 그 링크를 클릭하면 firebase index 자동 설치 창으로 넘어간다. 
+이를 통해서 index 를 설정한다. (설치 8~10분) 
+
+⚠orderBy 내부의 조건을 바꿀때 마다 새로운 index 를 설치한다. 
+이를 막기 위해서 처음 요청할 때 잘하자....
