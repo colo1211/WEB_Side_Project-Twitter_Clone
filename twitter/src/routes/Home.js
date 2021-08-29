@@ -6,7 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 const Home = ({userObj}) => {
     const [nwitter, setNwitter]= useState(''); // 사용자의 입력값을 받는 state 
     const [nwitters, setNwitters] = useState([]); // 기존에 db에 있던 값들을 저장하기 위한 state 
-    const [attachment, setAttachment] = useState(); 
+    const [attachment, setAttachment] = useState(); // 사진 미리보기를 위한 URL을 담을 state
 
     // const getNwitters = async() => {
     //     // DB에 올라온 내용들을 가져오기 위한 .get()
@@ -39,22 +39,26 @@ const Home = ({userObj}) => {
     const onSubmit = async (e) => {
         // 일단 제출을 막는다. 
         e.preventDefault();
-        
-        const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`); // 파이어 스토리지에 올릴 ref 만들기(storageService.ref().child(`폴더명(userid)/파일명(uuid를 통한 랜덤 생성)`))
-        // console.log(fileRef); 
-        const request = await fileRef.putString(attachment, 'data_url'); // 파이어 스토리지에 putString을 통해 올리기 ( 이미지 URL , format 형식)
-        // console.log(request); 
 
-                //  // 사용자가 뭐라도 입력했다면, 제출
-                // // 비관계형 데이터베이스, collection (폴더) - document (문서) 로 구성
-                // await dbService.collection('nwitter').add({
-                //     text : nwitter, 
-                //     createdAt : Date.now(),
-                //     creatorId : userObj.uid
-                // });
-                // console.log('성공');
-                // setNwitter(''); // 서버로 제출 이후에 바로 칸을 빈 것으로 만든다. 
-            
+        let attachmentURL = ''; // 객체에 firestorage에 저장되어 있는 URL을 담기 위한 변수
+        
+        // 만약 미리 띄운 사진의 URL을 담는 state가 빈칸이 아니라면?
+        if (attachment !== ''){
+            const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`); // 파이어 스토리지에 올릴 ref 만들기(storageService.ref().child(`폴더명(userid)/파일명(uuid를 통한 랜덤 생성)`))
+            // console.log(fileRef); 
+            const response = await fileRef.putString(attachment, 'data_url'); // 파이어 스토리지에 putString을 통해 올리기 ( 이미지 URL , format 형식)
+            // console.log(response); 
+            attachmentURL = await response.ref.getDownloadURL();    
+        }
+        await dbService.collection('nwitter').add({
+                text : nwitter, 
+                createdAt : Date.now(),
+                creatorId : userObj.uid,
+                attachmentURL
+        });
+        // console.log(attachmentURL); 
+        setNwitter(''); // 서버로 제출 이후에 바로 칸을 빈 것으로 만든다. 
+        setAttachment('');
     };
 
     const onChange = (e) => {
