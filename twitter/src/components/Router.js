@@ -22,7 +22,7 @@ const AppRouter = ({isLogin ,setIsLogin, userObj})=>{
                         </Route>
 
                         <Route exact path='/profile'>  
-                            <Profile isLogin={isLogin} setIsLogin={setIsLogin}/>
+                            <Profile isLogin={isLogin} setIsLogin={setIsLogin} userObj={userObj}/>
                         </Route>
                     </>
                     // 로그인이 되어 있지 않다면 Auth 로 이동
