@@ -1,0 +1,99 @@
+firestorage (파이어 스토리지)를 이용한 사진 업로드 하기 (미리보기 X) 
+firestorage 특징 
+⭐⭐⭐⭐⭐ firestorage 에 접근하여 파일을 Create,Delete 하기 위해서는 URL이 아닌 우선 ref로 접근해야 한다. 
+
+✔ [ 사진 create ] 
+만약 사진이 있다면, 사진의 URL을 받아서 nweet 에 추가한다. 파일 URL을 가진 nweet을 만든다. 
+[ 핵심 ] 
+```` 
+const fileRef = storageService.ref().child(` 저장 될 폴더명/ 저장 될 파일명 `);\
+const response = await fileRef.putString( attachment , ' data_url ' );
+```` 
+
+1. [ fbase.js ] 에서 
+import 'firebase/storage'; 
+export const storageService = firebase.storage( );
+
+2.  [ Home.js ] 에서 
+import {storageService} from 'fbase.js'; 
+
+⭐ storage는 레퍼런스( ref.child( ` 사용자명/ 파일의 ID를 uuid를 사용 ` ) )라는 경로 시스템을 가지고 있다.
+But, 파이어스토어의 문서 아이디처럼 자동으로 ID를 할당해주지 않으므로
+우리는 UUID 를 import 해와야 한다. 
+> UUID : 특별한 식별자를 랜덤으로 생성해준다. 
+[ UUID 사용법 ] 
+1. npm install uuid 
+2. import {v4 as uuidv4} from 'uuid'; 
+3. uuidv4( );
+
+storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
+> 사용자uid / 파일에 대한 랜덤 id 부여
+: 단지 파일에 대한 reference를 만들고 있는 것, storage 에 넣어줄 path(reference)를 
+임의적으로 설정해 주는 것 (폴더명과 파일명을 정해야 하는데, 폴더명은 유저의 id, 파일명은 랜덤으로
+
+이렇게 얻어낸 path를 통해서 .putString( attachment , 'data_url' );
+1. 첫번째 인자에는 이미지 파일의 URL
+2. 두번째 인자에는 첫번째 인자의 자료형(format)을 넣어준다. 
+
+````
+	const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`); // 파이어 스토리지에 올릴 ref 만들기(storageService.ref().child(`폴더명(userid)/파일명(uuid를 통한 랜덤 생성)`))
+            // console.log(fileRef); 
+            const response = await fileRef.putString(attachment, 'data_url'); 
+````
+⭐ onSubmit 버튼을 클릭하면 FireStorage 에 사용자명(폴더)/파일명(파일) 위치로 이미지가 올라가 있음을 확인할 수 있다. 
+
+⭐ response 에는 firestorage 상에 올라가는 url 을 얻을 수 있다. (response는 객체형식으로 되어 있고 response.ref 내에 URL이 포함되어 있다.)
+ex) https://nwitter-cedf7.appspot.com/jLcGoFmLt4bBk7mpj8OAAzr0Rb82/1e6665fa-d36d-4c90-8995-dc1f785c7c72
+와 같이 얻을 수 있지만 브라우저 URL에서 이를 검색해도 보안상의 문제로 404 Error 가 뜬다.
+
+우리의 목적은 firestorage에 저장되어 있는 img의 url을 가져오는 것이다.  
+==================================================================================
+
+✔ [ 사진 Read ]
+> response.ref 상에 저장 되어 있는 URL을 가져오기 위해서는 
+⭐ response.ref.getDownloadURL( ); 을 사용하면 된다. 
+getDownloadURL 은 Promise 를 리턴하므로 await 을 붙여야 한다. 
+
+얻어낸 파이어베이스 상의 Img URL을 nwitter 객체에 추가해준다. 
+
+````
+ let attachmentURL = ''; // 객체에 firestorage에 저장되어 있는 URL을 담기 위한 변수
+        
+        // 만약 미리 띄운 사진의 URL을 담는 state가 빈칸이 아니라면?
+        if (attachment !== ''){
+            const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`); // 파이어 스토리지에 올릴 ref 만들기(storageService.ref().child(`폴더명(userid)/파일명(uuid를 통한 랜덤 생성)`))
+            // console.log(fileRef); 
+            const response = await fileRef.putString(attachment, 'data_url'); // 파이어 스토리지에 putString을 통해 올리기 ( 이미지 URL , format 형식)
+            console.log(response); 
+            attachmentURL = await response.ref.getDownloadURL();    
+        }
+        await dbService.collection('nwitter').add({
+                text : nwitter, 
+                createdAt : Date.now(),
+                creatorId : userObj.uid,
+                attachmentURL : attachmentURL
+        });
+        // console.log(attachmentURL); 
+        setNwitter(''); // 서버로 제출 이후에 바로 칸을 빈 것으로 만든다. 
+        setAttachment(''); 
+````
+
+사진 띄우기 -> [ Nweets.js ] 에서 attachmentURL이 true 일때만 사진을 nweet한다. 
+{ nweetObj.attachmentURL && 
+        <>
+            <img src={nweetObj.attachmentURL} width='80px' height='100px'/>
+        </>
+}
+
+==========================================================
+✔ [ 사진 Delete ] 
+현재 화면상에서 삭제는 되지만 파이어스토리지 상에서는 삭제가 되지 않는다. 
+따라서 화면상에서 삭제를 눌렀을 때, 파이어스토리지에서도 삭제가 되기 위해서는 
+reference 가 필요하다.
+
+refFromURL ( URL ); 
+ 
+await storageService.refFromURL(nweetObj.attachmentURL).delete();
+URL 에서 reference 로 변경해주는 refFromURL을 사용하면 된다. 
+
+
