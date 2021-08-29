@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'; 
-import {dbService} from 'fbase.js'; 
+import {dbService, storageService} from 'fbase.js'; 
 import Nweets from 'components/Nweets.js';
+import {v4 as uuidv4} from 'uuid'; 
 
 const Home = ({userObj}) => {
     const [nwitter, setNwitter]= useState(''); // 사용자의 입력값을 받는 state 
@@ -38,25 +39,22 @@ const Home = ({userObj}) => {
     const onSubmit = async (e) => {
         // 일단 제출을 막는다. 
         e.preventDefault();
-        // 사용자가 뭐라도 입력했다면, 제출
-        if(nwitter){ 
-            try {    
-                // 비관계형 데이터베이스, collection (폴더) - document (문서) 로 구성
-                await dbService.collection('nwitter').add({
-                    text : nwitter, 
-                    createdAt : Date.now(),
-                    creatorId : userObj.uid
-                });
-                console.log('성공');
-                setNwitter(''); // 서버로 제출 이후에 바로 칸을 빈 것으로 만든다. 
-            }catch(error){
-                console.log(error.message); 
-            }
-        }
-    // 사용자가 아무것도 제출을 안해서 빈칸 제출을 막는 코드
-        else{
-            alert('빈 칸은 Twitt 할 수 없습니당');
-        }
+        
+        const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`); // 파이어 스토리지에 올릴 ref 만들기(storageService.ref().child(`폴더명(userid)/파일명(uuid를 통한 랜덤 생성)`))
+        // console.log(fileRef); 
+        const request = await fileRef.putString(attachment, 'data_url'); // 파이어 스토리지에 putString을 통해 올리기 ( 이미지 URL , format 형식)
+        // console.log(request); 
+
+                //  // 사용자가 뭐라도 입력했다면, 제출
+                // // 비관계형 데이터베이스, collection (폴더) - document (문서) 로 구성
+                // await dbService.collection('nwitter').add({
+                //     text : nwitter, 
+                //     createdAt : Date.now(),
+                //     creatorId : userObj.uid
+                // });
+                // console.log('성공');
+                // setNwitter(''); // 서버로 제출 이후에 바로 칸을 빈 것으로 만든다. 
+            
     };
 
     const onChange = (e) => {
