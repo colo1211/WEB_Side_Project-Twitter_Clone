@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { dbService } from 'fbase';
+import { dbService,storageService } from 'fbase';
 
 // itsMe 는 true/false 로 결과값을 받는 props
 const Nweets = ({nweetObj, itsMe}) => {
@@ -16,6 +16,9 @@ const Nweets = ({nweetObj, itsMe}) => {
         if (ok === true) { // 삭제 
             // console.log(nweetObj.id); // 해당 게시물의 id를 준다.            
              const temp = await dbService.doc(`/nwitter/${nweetObj.id}`).delete(); // dbService.doc(파일 경로) -> 파일을 반환 
+             if (nweetObj.attachmentURL !== ''){// URL이 비어있지 않다면(사진이 올라오지 않은게 아니라면)
+             const ref = await storageService.refFromURL(nweetObj.attachmentURL).delete();
+             }
         }
     }
 
@@ -36,6 +39,10 @@ const Nweets = ({nweetObj, itsMe}) => {
         setEditToggle((prev)=>!prev); 
     } 
 
+    const onFileChange = () => {
+        console.log('파일 올라옴'); 
+    }
+
     return (
         <div>
         {editToggle //Toggle 이 true 라면 수정 Form 을 띄워주고 기존의 텍스트를 없애줌
@@ -50,7 +57,13 @@ const Nweets = ({nweetObj, itsMe}) => {
                 </>
             )
         : // Toggle 이 false 라면 수정 Form이 아닌 기존의 텍스트를 보여줌
-                <><h5>{ nweetObj.text }</h5></>
+                <>
+                    <h5>{ nweetObj.text }</h5>
+                    { nweetObj.attachmentURL && 
+                    <>
+                        <img src={nweetObj.attachmentURL} width='80px' height='100px'/>
+                    </> }
+                </>
         }
         { itsMe && ( // itsMe가 True이고 editToggle이 false(수정X)면 삭제버튼과 수정버튼을 보여줌
             editToggle 
