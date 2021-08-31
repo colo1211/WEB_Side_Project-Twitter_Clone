@@ -6,7 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 const Home = ({userObj}) => {
     const [nwitter, setNwitter]= useState(''); // 사용자의 입력값을 받는 state 
     const [nwitters, setNwitters] = useState([]); // 기존에 db에 있던 값들을 저장하기 위한 state 
-    const [attachment, setAttachment] = useState(); // 사진 미리보기를 위한 URL을 담을 state
+    const [attachment, setAttachment] = useState(''); // 사진 미리보기를 위한 URL을 담을 state
 
     // const getNwitters = async() => {
     //     // DB에 올라온 내용들을 가져오기 위한 .get()
