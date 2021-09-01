@@ -2,7 +2,7 @@ import { authService, dbService } from 'fbase';
 import React, { useEffect, useState } from 'react'; 
 import { useHistory } from 'react-router-dom';
 
-export default ({isLogin ,setIsLogin, userObj}) => {
+export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
 
     // let temp; 
 
@@ -39,6 +39,7 @@ export default ({isLogin ,setIsLogin, userObj}) => {
             await userObj.updateProfile({ // 인자 1. displaName 2. Photo URL
                 displayName : newDisplayName
             }); 
+            refreshUser(); 
             console.log(userObj.displayName);
         }
     }
