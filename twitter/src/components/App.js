@@ -9,7 +9,7 @@ function App() {
   const [isLogin, setIsLogin] = useState(false); // 로그인이 되어 있는지 체크하는 state 
   // console.log(authService.currentUser);
 
-  const [userObj, setUsetObj] = useState(null); 
+  const [userObj, setUserObj] = useState(null); 
   // 글쓴이의 user id에 대해서 전달하기 위한 state, props 로 전달할 것임. 
 
   useEffect(()=>{
@@ -20,18 +20,21 @@ function App() {
     authService.onAuthStateChanged((user)=> {
       if (user){ // 뭐라도 찍혀있다면, 
         setIsLogin(true); 
-        setUsetObj(user); 
+        setUserObj(user); 
       }else {
         setIsLogin(false); 
       }
     }); // user는 로그인 되어있다면 콘솔창에 찍혀있을 것이고 아니라면 콘솔창에 null 이 찍힐 것이다.  
-    
   }, []);
+
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUserObj(Object.assign({},user)); 
+  }
 
   return (
     <>
-      { init ?<AppRouter isLogin={isLogin} setIsLogin={setIsLogin} userObj={userObj}/> : 'Loading...'}
-      <footer>&copy; {new Date().getFullYear()} Kwitter </footer>
+      { init ?<AppRouter refreshUser = {refreshUser} isLogin={isLogin} setIsLogin={setIsLogin} userObj={userObj}/> : 'Loading...'}
     </>
   );
 }
