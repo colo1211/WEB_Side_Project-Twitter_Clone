@@ -1,0 +1,55 @@
+[ 프로필 실시간 업데이트 해보기 ]
+
+update할 항목은 대표적으로 1. displayName 2. PhotoURL 등이 있지만 나는 displayName 만 해볼 것!
+
+⭐ 리액트 컴포넌트 리렌더링되는 경우
+1. useState 로 관리중인 state가 업데이트 되는 경우 
+2. props 로 받은 요소가 업데이트 되는 경우 
+
+[ 사용자가 Change Profile Name 버튼을 눌렀을 때 ]
+이 때 input 내에 사용자가 입력한 displayName 을 업데이트 해주면 된다. 
+이를 onSubmit 함수를 만들어서 구현한다. 
+
+````
+const onSubmit = async (e) =>{ // update displayName
+        
+        e.preventDefault();
+        if (userObj.displayName !== newDisplayName) { // 기존의 displayName과 newDisplayName 과 다를때만
+            await userObj.updateProfile({ // 인자 1. displaName 2. Photo URL
+                displayName : newDisplayName
+            }); 
+            refreshUser(); 
+            // console.log(userObj.displayName);
+        }
+    }
+````
+
+⭐ 여기서 지난 포스팅과의 큰 차이점은 실시간 성을 고려했다는 점이다. 
+여기서는 App.js 에서 생성한 refreshUser() 함수를 전달하여 Profile.js 에서 사용자가 
+버튼을 눌렀을 때 userObj 를 업데이트 하는 역할을 한다. 
+
+[ App.js ]
+
+````
+  const refreshUser = () => {
+    const user = authService.currentUser; // 새로 업데이트 된 객체 
+    setUserObj(user);  // userObj 에 새로 업데이트 된 객체를 넣어준다. 
+  }
+````
+를 해주면 현재 업데이트된 속성들을 적용할 수 있다. 
+⭐ 하지만 실시간으로 업데이트 되지 않는다. 
+
+⭐⭐⭐⭐⭐ 리액트는 덩치가 큰 객체의 변화를 제대로 인식하지 못한다. 
+따라서, 객체 중 우리가 사용할 속성만을 추려서 정의하고 업데이트 또한 바뀐것만 적용해주면 
+리액트가 객체의 변화를 빠르게 감지하고 리렌더링을 진행이 가능하다. 
+
+````
+  const refreshUser = () => {
+    const user = authService.currentUser; // 새로 업데이트 된 객체 
+    setUserObj({
+      uid : user.uid,
+          displayName : user.displayName, 
+          updateProfile : (args) => user.updateProfile(args) 
+    });  // userObj 에 새로 업데이트 된 객체를 넣어준다. 
+  }
+````
