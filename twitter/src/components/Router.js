@@ -5,11 +5,11 @@ import Home from 'routes/Home';
 import Profile from 'routes/Profile';
 import Navigation from 'components/Navigation.js';
 
-const AppRouter = ({isLogin ,setIsLogin, userObj})=>{
+const AppRouter = ({isLogin ,setIsLogin, userObj, refreshUser})=>{
     return (
         <Router>
             {/* 로그인이 되었을 때, Nav 바를 렌더링 해줌 */}
-            {isLogin ?<Navigation/> : null}
+            {isLogin ?<Navigation userObj={userObj}/> : null}
             <Switch>
             
                 {    
@@ -22,7 +22,7 @@ const AppRouter = ({isLogin ,setIsLogin, userObj})=>{
                         </Route>
 
                         <Route exact path='/profile'>  
-                            <Profile isLogin={isLogin} setIsLogin={setIsLogin} userObj={userObj}/>
+                            <Profile refreshUser = {refreshUser} isLogin={isLogin} setIsLogin={setIsLogin} userObj={userObj}/>
                         </Route>
                     </>
                     // 로그인이 되어 있지 않다면 Auth 로 이동
