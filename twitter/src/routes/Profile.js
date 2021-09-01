@@ -34,13 +34,14 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
     }
 
     const onSubmit = async (e) =>{ // update displayName
+        
         e.preventDefault();
         if (userObj.displayName !== newDisplayName) { // 기존의 displayName과 newDisplayName 과 다를때만
             await userObj.updateProfile({ // 인자 1. displaName 2. Photo URL
                 displayName : newDisplayName
             }); 
             refreshUser(); 
-            console.log(userObj.displayName);
+            // console.log(userObj.displayName);
         }
     }
 
@@ -48,7 +49,7 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
         <>       
             <form> 
                 <input onChange={onChange} type='text' placeholder='Display Name' value={newDisplayName}/>
-                <input onClick={onSubmit}type='submit' value='Update Profile'/>
+                <input onClick={onSubmit}type='submit' value='Change Profile Name'/>
             </form>
             <button onClick = {onLogOutClock}>Log Out</button> 
                   
