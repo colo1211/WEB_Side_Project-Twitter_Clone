@@ -28,8 +28,8 @@ function App() {
   }, []);
 
   const refreshUser = () => {
-    const user = authService.currentUser;
-    setUserObj(Object.assign({},user)); 
+    const user = authService.currentUser; // 새로 업데이트 된 객체 
+    setUserObj(Object.assign({},user));  // userObj 에 새로 업데이트 된 객체를 넣어준다. 
   }
 
   return (
