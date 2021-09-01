@@ -20,7 +20,11 @@ function App() {
     authService.onAuthStateChanged((user)=> {
       if (user){ // 뭐라도 찍혀있다면, 
         setIsLogin(true); 
-        setUserObj(user); 
+        setUserObj({
+          uid : user.uid,
+          displayName : user.displayName, 
+          updateProfile : (args) => user.updateProfile(args) 
+        }); // userObj에 onAuthStateChanged의 내부 콜백 인자로 들어가 있는 user를 복사하였음
       }else {
         setIsLogin(false); 
       }
@@ -29,7 +33,11 @@ function App() {
 
   const refreshUser = () => {
     const user = authService.currentUser; // 새로 업데이트 된 객체 
-    setUserObj(Object.assign({},user));  // userObj 에 새로 업데이트 된 객체를 넣어준다. 
+    setUserObj({
+      uid : user.uid,
+          displayName : user.displayName, 
+          updateProfile : (args) => user.updateProfile(args) 
+    });  // userObj 에 새로 업데이트 된 객체를 넣어준다. 
   }
 
   return (
