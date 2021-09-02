@@ -21,7 +21,7 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
     // },[]);
 
     let history = useHistory();
-    const [ newDisplayName, setNewDisplayName ] = useState(userObj.displayName); 
+    // const [ newDisplayName, setNewDisplayName ] = useState(userObj.displayName); 
     
     const onLogOutClick =()=>{
         authService.signOut(); // 로그아웃을 하는 Firebase 함수 .signOut();
@@ -29,31 +29,31 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
         history.push('/'); 
     }
 
-    const onChange = (e) => {
-        setNewDisplayName(e.target.value);
-    }
+    // const onChange = (e) => {
+    //     setNewDisplayName(e.target.value);
+    // }
 
-    const onSubmit = async (e) =>{ // update displayName
+    // const onSubmit = async (e) =>{ // update displayName
         
-        e.preventDefault();
-        if (userObj.displayName !== newDisplayName) { // 기존의 displayName과 newDisplayName 과 다를때만
-            await userObj.updateProfile({ // 인자 1. displaName 2. Photo URL
-                displayName : newDisplayName
-            }); 
-            refreshUser(); 
-            // console.log(userObj.displayName);
-        }
-    }
+    //     e.preventDefault();
+    //     if (userObj.displayName !== newDisplayName) { // 기존의 displayName과 newDisplayName 과 다를때만
+    //         await userObj.updateProfile({ // 인자 1. displaName 2. Photo URL
+    //             displayName : newDisplayName
+    //         }); 
+    //         refreshUser(); 
+    //         // console.log(userObj.displayName);
+    //     }
+    // }
 
     return (
         <div className='container'>       
-            <form className='profileForm'> 
+            {/* <form className='profileForm'> 
                 <input
-                    onChange={onChange}
+                    // onChange={onChange}
                     type="text"
                     autoFocus
                     placeholder="Display name"
-                    value={newDisplayName}
+                    // value={newDisplayName}
                     className="formInput"
                 />
                 <input
@@ -64,8 +64,10 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
                         marginTop: 10,
                     }}
                 />
-            </form>
-            <span className="formBtn cancelBtn logOut" onClick={onLogOutClick}>
+            </form> */}
+            <span className="formBtn cancelBtn logOut" 
+            onClick={onLogOutClick}
+            >
         Log Out
       </span>
                   
