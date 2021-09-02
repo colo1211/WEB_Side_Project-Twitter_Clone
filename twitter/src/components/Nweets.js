@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { dbService,storageService } from 'fbase';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 // itsMe 는 true/false 로 결과값을 받는 props
 const Nweets = ({nweetObj, itsMe}) => {
@@ -44,16 +46,18 @@ const Nweets = ({nweetObj, itsMe}) => {
     }
 
     return (
-        <div>
+        <div className="nweet">
         {editToggle //Toggle 이 true 라면 수정 Form 을 띄워주고 기존의 텍스트를 없애줌
         ?
             (
                 <>
-                    <form>
-                        <input type='text' value={newNweet} onChange={onChange}/> 
-                        <input type='submit' onClick={onSubmit} value='Edit Complete!'/>
+                    <form className="container nweetEdit">
+                        <input className="formInput" type='text' autoFocus value={newNweet} onChange={onChange}/> 
+                        <input className="formBtn" type='submit' onClick={onSubmit} value='Update Kweet!'/>
                     </form>
-                    <button onClick={changeToggle}>Cancel</button>
+                    <span onClick={changeToggle} className="formBtn cancelBtn">
+                        Cancel
+                    </span>
                 </>
             )
         : // Toggle 이 false 라면 수정 Form이 아닌 기존의 텍스트를 보여줌
@@ -69,10 +73,14 @@ const Nweets = ({nweetObj, itsMe}) => {
             editToggle 
             ? null 
             :
-                <>
-                    <button onClick={onDeleteClick}>Delete</button>
-                    <button onClick={changeToggle}>Edit</button>
-                </>
+            <div class="nweet__actions">
+                    <span onClick={onDeleteClick}>
+                        <FontAwesomeIcon icon={faTrash} />
+                    </span>
+                    <span onClick={changeToggle}>
+                        <FontAwesomeIcon icon={faPencilAlt} />
+                    </span>
+            </div>
         )}
         </div> 
     )

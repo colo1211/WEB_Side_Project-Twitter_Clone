@@ -1,12 +1,17 @@
 import React, { useState } from 'react'; 
 import { storageService, dbService } from 'fbase';
 import {v4 as uuidv4} from 'uuid';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const NweetFactory = ({userObj }) => {
     const [nwitter, setNwitter]= useState(''); // 사용자의 입력값을 받는 state 
     const [attachment, setAttachment] = useState(''); // 사진 미리보기를 위한 URL을 담을 state
   
     const onSubmit = async (e) => {
+        if (nwitter === "") {
+            return;
+          }
         // 일단 제출을 막는다. 
         e.preventDefault();
 
@@ -54,17 +59,38 @@ const NweetFactory = ({userObj }) => {
     }
     return (
         <>
-            <form>
-                <input type='text' placeholder = 'How was your day?' onChange={onChange} value={nwitter} maxLength= {120}/>
-                <input type='file' accept='image/*' onChange={onFileChange}/>
-                <input type='submit' onClick={onSubmit} value='Kwitt!' />  
+            <form className="factoryForm">
+                <div className="factoryInput__container">
+                    <input
+                    className="factoryInput__input"
+                    value={nwitter}
+                    onChange={onChange}
+                    type="text"
+                    placeholder="What's on your mind?"
+                    maxLength={120}
+                    />
+                    <input type="submit" onClick={onSubmit} value="&rarr;" className="factoryInput__arrow" />
+                </div>
+                <label for="attach-file" className="factoryInput__label">
+                    <span>Add photos</span>
+                    <FontAwesomeIcon icon={faPlus} />
+                </label>
+                <input id="attach-file"
+                    type="file"
+                    accept="image/*"
+                    onChange={onFileChange}
+                    style={{
+                    opacity: 0,
+                    }}/>
+                {/* <input type='submit' onClick={onSubmit} value='Kwitt!' />   */}
                 { attachment && 
                     (
-                        <div>
-                            {/* 파일을 선택하면 사진이 나오게 될 영역 */}
-                            <img src={attachment} width='80px' height='100px'/>
-                            {/* 취소를 클릭했을 때 사진의 URL을 삭제해줄 함수 */}
-                            <button onClick={clearSetAttachment}>Clear</button>    
+                        <div className="factoryForm__attachment">
+                        <img src={attachment} style={{ backgroundImage: attachment}}/>
+                            <div className="factoryForm__clear" onClick={clearSetAttachment}>
+                                <span>Remove</span>
+                                <FontAwesomeIcon icon={faTimes} />
+                            </div>
                         </div>
                     )
                 } 

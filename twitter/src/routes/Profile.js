@@ -23,7 +23,7 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
     let history = useHistory();
     const [ newDisplayName, setNewDisplayName ] = useState(userObj.displayName); 
     
-    const onLogOutClock =()=>{
+    const onLogOutClick =()=>{
         authService.signOut(); // 로그아웃을 하는 Firebase 함수 .signOut();
         // setIsLogin(false); 
         history.push('/'); 
@@ -46,13 +46,29 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
     }
 
     return (
-        <>       
-            <form> 
-                <input onChange={onChange} type='text' placeholder='Display Name' value={newDisplayName}/>
-                <input onClick={onSubmit}type='submit' value='Change Profile Name'/>
+        <div className='container'>       
+            <form className='profileForm'> 
+                <input
+                    onChange={onChange}
+                    type="text"
+                    autoFocus
+                    placeholder="Display name"
+                    value={newDisplayName}
+                    className="formInput"
+                />
+                <input
+                    type="submit"
+                    value="Update Profile"
+                    className="formBtn"
+                    style={{
+                        marginTop: 10,
+                    }}
+                />
             </form>
-            <button onClick = {onLogOutClock}>Log Out</button> 
+            <span className="formBtn cancelBtn logOut" onClick={onLogOutClick}>
+        Log Out
+      </span>
                   
-        </>
+        </div>
     )
 }

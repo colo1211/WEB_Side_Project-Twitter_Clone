@@ -36,9 +36,9 @@ const Home = ({userObj}) => {
     
 
     return(
-     <>
+     <div className ='container'>
         <NweetFactory userObj={userObj}/>
-        <div>
+        <div style={{ marginTop: 30 }}>
             {
                 nwitters.map((value,index)=>{
                     return <Nweets nweetObj = {value} itsMe = {userObj.uid === value.creatorId}/> // itsMe 는 true 혹은 false 를 전달
@@ -46,7 +46,7 @@ const Home = ({userObj}) => {
                 })
             }
         </div>
-     </>   
+     </div>   
     )
 };
 export default Home;
