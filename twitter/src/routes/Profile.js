@@ -21,6 +21,7 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
     // },[]);
 
     let history = useHistory();
+    // console.log(userObj.displayName); 
     // const [ newDisplayName, setNewDisplayName ] = useState(userObj.displayName); 
     
     const onLogOutClick =()=>{
@@ -66,7 +67,7 @@ export default ({isLogin ,setIsLogin, userObj, refreshUser}) => {
                 />
             </form> */}
             <span className="formBtn cancelBtn logOut" 
-            onClick={onLogOutClick}
+            // onClick={onLogOutClick}
             >
         Log Out
       </span>
