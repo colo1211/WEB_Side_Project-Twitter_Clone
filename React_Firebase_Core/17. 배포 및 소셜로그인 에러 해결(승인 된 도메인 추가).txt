@@ -1,0 +1,39 @@
+[ github를 통한 배포 ] 
+
+참고 포스팅 : https://doodreamcode.tistory.com/154
+
+[ 깃허브 호스팅 서비스 사용 방법 ] 
+1. [ pakage.json ] 파일의 맨 마지막에 호스팅 할 URL을 만들어 준다. 
+"homepage": "https://깃헙아이디.github.io/프로젝트가 연결된 폴더"
+
+프로젝트가 연결된 폴더를 어떻게 알아 낼까?
+$ git remote -v 를 사용하면 연결된 폴더를 알아낼 수 있다. 
+origin  https://github.com/colo1211/WEB_Side_Project-Twitter_Clone.git (fetch)
+origin  https://github.com/colo1211/WEB_Side_Project-Twitter_Clone.git (push) 
+
+따라서, "homepage": "https://colo1211.github.io/WEB_Side_Project-Twitter_Clone"
+
+2. 호스팅을 위한 명령어를 "script" : {  } 내부에 입력해준다. 
+   "scripts": {
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d build"
+  },
+
+npm run deploy를 실행 시키기 위한 deploy에 대해서 정의한다. 
+
+하지만, gh-pages 명령어를 사용하기 위해서는 gh-pages를 설치해야 한다. 
+
+> npm install gh-pages
+
+3. 배포하기 
+> npm run deploy
+
+Publish 가 뜨면 성공!
+
+[ 배포 후 소셜 로그인 에러 해결 ]
+도메인이 인증되지 않았기 때문에 발생하는 에러, 
+firestore 에서 도메인을 등록해주면 된다. 
+
+Firebase Console -> Auth section -> Sign in method tab 에서 
+승인된 도메인 칸에 
+colo1211.github.io를 추가해주면 된다. 
